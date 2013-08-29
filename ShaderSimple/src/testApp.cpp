@@ -39,7 +39,7 @@ void testApp::draw()
 
 		
 	ofSetColor( 128, 128, 128 );
-	fontSmall.drawString( "fps: " + ofToString( ofGetFrameRate(), 1), 5, ofGetHeight() - 8 );
+	fontSmall.drawString( "fps: " + ofToString( ofGetFrameRate(), 1), 15, ofGetHeight() - 30 );
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------
 //
