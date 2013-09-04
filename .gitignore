@@ -1,0 +1,37 @@
+libs
+obj
+*.app
+*/*/bin/*
+!*/*/bin/data
+*._*
+*/*bin/readMe.txt
+#XCode
+*.pbxuser
+*.perspective
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+#XCode 4
+xcuserdata
+*.xcworkspace
+
+# OS-specific ignore patterns
+
+#Linux
+*~
+# KDE
+.directory
+.AppleDouble
+
+#OSX
+.DS_Store
+*.swp
+*~.nib
+# Thumbnails
+._*
+
+#Windows
+# Windows image file caches
+Thumbs.db
+# Folder config file
+Desktop.ini
