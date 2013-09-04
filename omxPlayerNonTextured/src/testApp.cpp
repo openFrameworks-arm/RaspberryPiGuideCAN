@@ -6,10 +6,9 @@ void testApp::setup()
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	ofSetVerticalSync(false);
 	
-	
 	string videoPath = ofToDataPath("../../../videos/big_buck_bunny_MpegStreamclip_720p_h264_50Quality_48K_256k_AAC.mov", true);
 	
-	//this will let us just grab a video without recompiling
+	// this will just set videoPath to the first video in the videos folder, if any.
 	ofDirectory currentVideoDirectory(ofToDataPath("videos", true));
 	if (currentVideoDirectory.exists()) 
 	{
@@ -29,16 +28,12 @@ void testApp::setup()
 	settings.enableLooping = true;		//default true
 
 	omxPlayer.setup(settings);
-	
 }
 
 //--------------------------------------------------------------
-void testApp::update()
-{
+void testApp::update() {
 	//update background tasks here
 }
-
-
 
 //--------------------------------------------------------------
 void testApp::draw(){
@@ -46,50 +41,29 @@ void testApp::draw(){
 }
 
 //--------------------------------------------------------------
-void testApp::keyPressed  (int key){
-
-	
-}
+void testApp::keyPressed  (int key) { }
 
 //--------------------------------------------------------------
-void testApp::keyReleased(int key){
-
-}
+void testApp::keyReleased(int key) { }
 
 //--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y ){
-
-}
+void testApp::mouseMoved(int x, int y ) { }
 
 //--------------------------------------------------------------
-void testApp::mouseDragged(int x, int y, int button){
-
-
-}
+void testApp::mouseDragged(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button){
-
-}
+void testApp::mousePressed(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void testApp::mouseReleased(int x, int y, int button){
-
-}
-
+void testApp::mouseReleased(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void testApp::windowResized(int w, int h){
-
-}
+void testApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void testApp::gotMessage(ofMessage msg){
-
-}
+void testApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
+void testApp::dragEvent(ofDragInfo dragInfo) {}
 

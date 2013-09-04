@@ -1,23 +1,11 @@
-//precision highp float;
-
-//uniform sampler2D c;
-//uniform float useTexture;
-//uniform float useColors;
-//suniform vec4 color;
-
-//varying float depth;
-//varying vec4 colorVarying;
-//varying vec2 texCoordVarying;
 
 uniform vec2 resolution;
 uniform float time;
 uniform sampler2D tex0;
-//uniform sampler2D tex1;
-//uniform sampler2D tex2;
-
 
 // http://www.iquilezles.org/apps/shadertoy/?p=Postpro		
-void main(){
+void main()
+{
 	vec2 q = gl_FragCoord.xy / resolution.xy;
     vec2 uv = 0.5 + (q-0.5)*(0.9 + 0.1*sin(0.2*time));
 
