@@ -79,28 +79,28 @@ void ofApp::draw(){
 		//Draw video source
 		ofPushMatrix();
 			colorImage.draw(0, 0);
-			ofDrawBitmapStringHighlight("colorImage", textMargin, textMargin);
+			//ofDrawBitmapStringHighlight("colorImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Grayscale video
 		ofPushMatrix();
 			ofTranslate(videoWidth, 0);
 			grayImage.draw(0, 0);
-			ofDrawBitmapStringHighlight("grayImage", textMargin, textMargin);
+			//ofDrawBitmapStringHighlight("grayImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Background
 		ofPushMatrix();
 			ofTranslate(0, videoHeight);
 			backgroundImage.draw(0, 0);
-			ofDrawBitmapStringHighlight("backgroundImage", textMargin, textMargin);
+			//ofDrawBitmapStringHighlight("backgroundImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Difference Image
 		ofPushMatrix();
 			ofTranslate(videoWidth, videoHeight);
 			differenceImage.draw(0, 0);
-			ofDrawBitmapStringHighlight("differenceImage", textMargin, textMargin);
+			//ofDrawBitmapStringHighlight("differenceImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Contours
@@ -121,7 +121,7 @@ void ofApp::draw(){
 				// Draw over the centroid if the blob is a hole
 				if(contourFinder.blobs[i].hole)
 				{
-					ofDrawBitmapStringHighlight("hole", contourFinder.blobs[i].boundingRect.getCenter());
+					//ofDrawBitmapStringHighlight("hole", contourFinder.blobs[i].boundingRect.getCenter());
 				}
 			}
 			ofPopStyle();
@@ -130,9 +130,10 @@ void ofApp::draw(){
 		ofPushMatrix();
 			ofTranslate(0, videoHeight*2);
 			stringstream info;
+			/*
 			info << "Press SPACEBAR to capture background"							<< "\n";
 			info << "Press +/- to increase/decrease threshold " << thresholdAmount	<< "\n";
-			info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";
+			info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";*/
 			info << "FPS: " << ofGetFrameRate();
 			ofDrawBitmapStringHighlight(info.str(), 2, textMargin);
 		ofPopMatrix();

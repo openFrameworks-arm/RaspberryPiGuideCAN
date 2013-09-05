@@ -50,18 +50,18 @@ void testApp::draw(){
 	//draw a smaller version in the lower right
 	int scaledHeight = omxPlayer.getHeight()/4;
 	int scaledWidth = omxPlayer.getWidth()/4;
-	omxPlayer.draw(ofGetWidth()-scaledWidth, ofGetHeight()-scaledHeight, scaledWidth, scaledHeight);
+	//omxPlayer.draw(ofGetWidth()-scaledWidth, ofGetHeight()-scaledHeight, scaledWidth, scaledHeight);
 	
 	// and osme info
 	stringstream info;
 	info << "APP FPS: "+ ofToString(ofGetFrameRate());
-	info <<"\n" <<	"MEDIA TIME: "			<< omxPlayer.getMediaTime();
+	/*info <<"\n" <<	"MEDIA TIME: "			<< omxPlayer.getMediaTime();
 	info <<"\n" <<	"DIMENSIONS: "			<< omxPlayer.getWidth()<<"x"<<omxPlayer.getHeight();
 	info <<"\n" <<	"DURATION: "			<< omxPlayer.getDuration();
 	info <<"\n" <<	"TOTAL FRAMES: "		<< omxPlayer.getTotalNumFrames();
 	info <<"\n" <<	"CURRENT FRAME: "		<< omxPlayer.getCurrentFrame();
 	info <<"\n" <<	"REMAINING FRAMES: "	<< omxPlayer.getTotalNumFrames() - omxPlayer.getCurrentFrame();
-	info <<"\n" <<	"CURRENT VOLUME: "		<< omxPlayer.getVolume();
+	info <<"\n" <<	"CURRENT VOLUME: "		<< omxPlayer.getVolume();*/
 
 	ofDrawBitmapStringHighlight(info.str(), 60, 60, ofColor(ofColor::black, 90), ofColor::yellow);
 }
