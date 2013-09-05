@@ -1,4 +1,7 @@
+
 libs
+!ofxAddons/ofxOMXPlayer/libs
+!ofxAddons/ofxOMXPlayer/libs/ffmpeg/libs
 obj
 *.app
 */*/bin/*
