@@ -10,13 +10,18 @@ void main()
 {
     // ---------------------------------------------------------
     // just draw the texture to screen
+
     //gl_FragColor = texture2D(tex0,texcoord0);
 
+
+    /*
     // ---------------------------------------------------------
-    // just draw the texture to screen, inverted
-    
-    / this isn't working, and can't see the output log, wil fix in a bit.
-    //gl_FragColor = vec4(1,1,1,0) - texture2D(tex0,texcoord0); // vec4(1,1,1,0) as we don't want to touch the alpha
+    // draw the texture to screen, inverted
+
+    vec4 texColor = texture2D(tex0,texcoord0);  
+    gl_FragColor = vec4(1.0-texColor.r, 1.0-texColor.g, 1.0-texColor.b, texColor.a); 
+    */
+
 
 
     /*
