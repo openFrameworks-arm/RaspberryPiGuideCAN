@@ -3,6 +3,10 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 
+	#ifdef TARGET_OPENGLES
+		ofHideCursor();
+	#endif
+	
 	#ifdef _USE_LIVE_VIDEO
         vidGrabber.setVerbose(true);
         vidGrabber.initGrabber(320,240);
@@ -46,7 +50,7 @@ void testApp::setup(){
 
 	lineSkip = 10;
 	
-	lastClickTime = 0.0f;
+	lastClickTime = -9999.0f;
 }
 
 //--------------------------------------------------------------
@@ -66,7 +70,7 @@ void testApp::update()
 	#endif
 
 	if (bNewFrame){
-
+		
 		#ifdef _USE_LIVE_VIDEO
             colorImg.setFromPixels(vidGrabber.getPixels(), 320,240);
 	    #else
@@ -88,7 +92,7 @@ void testApp::update()
 		
 	linesHeight = 80.0f;
 	
-	lineSkip = 4; //ofMap( cos(time * 1.1f), -1.0f, 1.0f, 5, 25 );
+	lineSkip = 3; //ofMap( cos(time * 1.1f), -1.0f, 1.0f, 5, 25 );
 	
 	// if we click, wait a bit until we auto orbit the camera
 	if( (time - lastClickTime) > 4.0 )
