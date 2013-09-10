@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+	font.loadFont( "DIN.otf", 8 );
+	
 	//ofSetVerticalSync(false);
 	videoPlayer.loadMovie("fingers.mp4");
 	videoPlayer.setLoopState(OF_LOOP_NORMAL);
@@ -79,28 +81,28 @@ void ofApp::draw(){
 		//Draw video source
 		ofPushMatrix();
 			colorImage.draw(0, 0);
-			//ofDrawBitmapStringHighlight("colorImage", textMargin, textMargin);
+			font.drawString("colorImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Grayscale video
 		ofPushMatrix();
 			ofTranslate(videoWidth, 0);
 			grayImage.draw(0, 0);
-			//ofDrawBitmapStringHighlight("grayImage", textMargin, textMargin);
+			font.drawString("grayImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Background
 		ofPushMatrix();
 			ofTranslate(0, videoHeight);
 			backgroundImage.draw(0, 0);
-			//ofDrawBitmapStringHighlight("backgroundImage", textMargin, textMargin);
+			font.drawString("backgroundImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Difference Image
 		ofPushMatrix();
 			ofTranslate(videoWidth, videoHeight);
 			differenceImage.draw(0, 0);
-			//ofDrawBitmapStringHighlight("differenceImage", textMargin, textMargin);
+			font.drawString("differenceImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Contours
@@ -121,7 +123,7 @@ void ofApp::draw(){
 				// Draw over the centroid if the blob is a hole
 				if(contourFinder.blobs[i].hole)
 				{
-					//ofDrawBitmapStringHighlight("hole", contourFinder.blobs[i].boundingRect.getCenter());
+					font.drawString("hole", contourFinder.blobs[i].boundingRect.getCenter().x, contourFinder.blobs[i].boundingRect.getCenter().y);
 				}
 			}
 			ofPopStyle();
@@ -130,12 +132,12 @@ void ofApp::draw(){
 		ofPushMatrix();
 			ofTranslate(0, videoHeight*2);
 			stringstream info;
-			/*
+			
 			info << "Press SPACEBAR to capture background"							<< "\n";
 			info << "Press +/- to increase/decrease threshold " << thresholdAmount	<< "\n";
-			info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";*/
+			info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";
 			info << "FPS: " << ofGetFrameRate();
-			ofDrawBitmapStringHighlight(info.str(), 2, textMargin);
+			font.drawString( info.str(), 2, textMargin);
 		ofPopMatrix();
 	
 	ofPopMatrix();

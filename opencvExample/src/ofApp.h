@@ -26,5 +26,6 @@ class ofApp : public ofBaseApp{
 		int						thresholdAmount;
 		bool					doLearnBackground;
 		
+		ofTrueTypeFont			font;
 };
 
