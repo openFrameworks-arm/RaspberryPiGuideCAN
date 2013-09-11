@@ -81,28 +81,28 @@ void ofApp::draw(){
 		//Draw video source
 		ofPushMatrix();
 			colorImage.draw(0, 0);
-			font.drawString("colorImage", textMargin, textMargin);
+			//font.drawString("colorImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Grayscale video
 		ofPushMatrix();
 			ofTranslate(videoWidth, 0);
 			grayImage.draw(0, 0);
-			font.drawString("grayImage", textMargin, textMargin);
+			//font.drawString("grayImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Background
 		ofPushMatrix();
 			ofTranslate(0, videoHeight);
 			backgroundImage.draw(0, 0);
-			font.drawString("backgroundImage", textMargin, textMargin);
+			//font.drawString("backgroundImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Difference Image
 		ofPushMatrix();
 			ofTranslate(videoWidth, videoHeight);
 			differenceImage.draw(0, 0);
-			font.drawString("differenceImage", textMargin, textMargin);
+			//font.drawString("differenceImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Contours
@@ -123,7 +123,7 @@ void ofApp::draw(){
 				// Draw over the centroid if the blob is a hole
 				if(contourFinder.blobs[i].hole)
 				{
-					font.drawString("hole", contourFinder.blobs[i].boundingRect.getCenter().x, contourFinder.blobs[i].boundingRect.getCenter().y);
+					//font.drawString("hole", contourFinder.blobs[i].boundingRect.getCenter().x, contourFinder.blobs[i].boundingRect.getCenter().y);
 				}
 			}
 			ofPopStyle();
@@ -133,9 +133,9 @@ void ofApp::draw(){
 			ofTranslate(0, videoHeight*2);
 			stringstream info;
 			
-			info << "Press SPACEBAR to capture background"							<< "\n";
-			info << "Press +/- to increase/decrease threshold " << thresholdAmount	<< "\n";
-			info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";
+			//info << "Press SPACEBAR to capture background"							<< "\n";
+			//info << "Press +/- to increase/decrease threshold " << thresholdAmount	<< "\n";
+			//info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";
 			info << "FPS: " << ofGetFrameRate();
 			font.drawString( info.str(), 2, textMargin);
 		ofPopMatrix();

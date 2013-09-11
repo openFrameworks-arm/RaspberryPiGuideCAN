@@ -92,7 +92,7 @@ void testApp::update()
 		
 	linesHeight = 80.0f;
 	
-	lineSkip = 3; //ofMap( cos(time * 1.1f), -1.0f, 1.0f, 5, 25 );
+	lineSkip = 4; //ofMap( cos(time * 1.1f), -1.0f, 1.0f, 2, 25 );
 	
 	// if we click, wait a bit until we auto orbit the camera
 	if( (time - lastClickTime) > 4.0 )
@@ -102,6 +102,8 @@ void testApp::update()
 		float orbitRadius = ofMap( ofNoise( (time-123.0f)*0.45f), 0.0f, 1.0f, 100.0f, 250.0f ) ;
 		camera.orbit(orbitLong, orbitLat, orbitRadius );
 	}
+
+	if( ofGetFrameNum() % 30 == 0 ) ofLogNotice() <<  "fps: " << ofToString( ofGetFrameRate(), 1); 
 }
 
 //--------------------------------------------------------------
