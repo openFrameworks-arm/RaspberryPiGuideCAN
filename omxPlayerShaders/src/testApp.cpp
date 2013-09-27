@@ -41,7 +41,7 @@ void testApp::update()
 void testApp::draw(){
 	
 	shader.begin();
-		shader.setUniformTexture("tex0", omxPlayer.getTextureReference(), omxPlayer.textureID);
+		shader.setUniformTexture("tex0", omxPlayer.getTextureReference(), omxPlayer.getTextureID());
 		shader.setUniform1f("time", ofGetElapsedTimef());
 		shader.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
 		omxPlayer.draw(0,0);

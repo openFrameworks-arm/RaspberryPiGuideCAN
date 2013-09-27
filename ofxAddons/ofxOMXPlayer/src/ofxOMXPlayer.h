@@ -1,165 +1,63 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofAppEGLWindow.h"
+#include "ofxOMXPlayerListener.h"
+#include "ofxOMXPlayerEngine.h"
 
 
-extern "C" 
-{
-	#include <libavformat/avformat.h>
-	#include <libavutil/avutil.h>
-};
-
-#include "OMXThread.h"
-#include "OMXClock.h"
-#include "OMXPlayerEGLImage.h"
-#include "OMXPlayerVideo.h"
-#include "OMXPlayerAudio.h"
 
 
-class ofxOMXPlayerListenerEventData
-{
-public:
-	ofxOMXPlayerListenerEventData(void* listener_)
-	{
-		listener = listener_;
-	}
-	void* listener;
-};
-
-
-class ofxOMXPlayerListener
-{
-public:
-	virtual void onVideoEnd(ofxOMXPlayerListenerEventData& e) = 0;
-};
-
-
-struct ofxOMXPlayerSettings 
-{
-	ofxOMXPlayerSettings()
-	{
-		videoPath = "";
-		
-		useHDMIForAudio = true;
-		enableTexture = true;
-		enableLooping = true;
-		listener	  = NULL;
-	}
-	string videoPath;
-	bool enableTexture;
-	bool useHDMIForAudio;
-	bool enableLooping;
-	ofxOMXPlayerListener* listener;
-	/*
-		To use HDMI Audio you may need to add the below line to /boot/config.txt and reboot
-	 
-		hdmi_drive=2
-	 
-		see http://elinux.org/RPiconfig for more details
-	 */
-	
-};
-
-
-class ofxOMXPlayer: public OMXThread
+class ofxOMXPlayer
 {
 public:
 	ofxOMXPlayer();
 	~ofxOMXPlayer();
-	
 	bool setup(ofxOMXPlayerSettings settings);
 	
-	void			loadMovie();
+	void loadMovie(string videoPath);
+	bool		isPaused();
+	bool		isPlaying();
 	
-	void			play();
-	void			stop();
+	bool isTextureEnabled;
 	
-	float			duration;
-	float			getDuration();
+	ofTexture&	getTextureReference();
+	GLuint		getTextureID();
+	int			getHeight();
+	int			getWidth();
 	
-	void			setPosition(float pct);
-	void			setVolume(float volume); // 0..1
-	float			getVolume();
-	ofTexture &		getTextureReference();
-	void			draw(float x, float y, float w, float h);
-	void			draw(float x, float y);
-	
-	void			setPaused(bool doPause);
-	
-	int				getCurrentFrame();
-	int				getTotalNumFrames();
+	void		draw(float x, float y, float w, float h);
+	void		draw(float x, float y);
 	
 	
-	float			getHeight();
-	float			getWidth();
+	double		getMediaTime();
+	void		stepFrameForward();
+	void		increaseVolume();
+	void		decreaseVolume();
 	
-	bool			isPaused();
-	bool			isPlaying();
-		
-
-	int				videoWidth;
-	int				videoHeight;
-	GLuint			textureID;
-
-		
-	bool			openPlayer();
-	double			getMediaTime();
-	bool			useHDMIForAudio;
+	float		getDuration();
 	
-	bool			isTextureEnabled;
-	bool			didVideoOpen;
-	bool			didAudioOpen;
-	void			stepFrameForward();
-	void			increaseVolume();
-	void			decreaseVolume();
 	
-	void			addListener(ofxOMXPlayerListener* listener_);
-	void			removeListener();
-
-	void						Process();
-	void						Lock();
-	void						UnLock();
+	void		setVolume(float volume); // 0..1
+	float		getVolume();
+	
+	
+	int			getCurrentFrame();
+	int			getTotalNumFrames();
+								  
+	void		setPaused(bool doPause);					
+	void saveImage(string imagePath="");
+	void updatePixels();
+	   
+	void close();
+	bool isOpen;
+	
+	
 	
 private:
 	
-	COMXCore				omxCore;
-	OMXClock*				clock;
-	
-	OMXPlayerVideo*			nonEglPlayer;
-	OMXPlayerEGLImage*		eglPlayer;
-	OMXPlayerVideoBase*		videoPlayer;
-	OMXPlayerAudio*			audioPlayer;
-	ofxOMXPlayerListener*	listener;
-	OMXReader				omxReader;
-	
-	COMXStreamInfo			videoStreamInfo;
-	COMXStreamInfo			audioStreamInfo;
-	
-	bool					isMPEG;
-	bool					hasVideo;
-	bool					hasAudio;
-	bool					isBufferEmpty;
-
-	
-	
-	
-	OMXPacket*				packet;
-	
-
-	
-	ofPixelFormat			internalPixelFormat;
-	string					moviePath;
-	int						nFrames;
-	bool					bPlaying;
-
-	
-	
-	double					loop_offset;
-	double					startpts;
-	int						loopCounter;
-	
-	
-	void					onVideoEnd();
+	void openEngine();
+	void addExitHandler();
+	void onUpdate(ofEventArgs& args);
+	ofxOMXPlayerEngine* engine;
+	ofxOMXPlayerSettings settings;
 };
-

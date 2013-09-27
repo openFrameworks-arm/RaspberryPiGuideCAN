@@ -113,7 +113,7 @@ void OMXClock::OMXStateIdle(bool lock /* = true */)
 		Lock();
 	}
 	OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
+	
 	if(m_omx_clock.GetState() == OMX_StateExecuting)
 	{
 		omx_err = m_omx_clock.SetStateForComponent(OMX_StatePause);
@@ -160,7 +160,7 @@ bool  OMXClock::OMXStop(bool lock /* = true */)
 		ofLogVerbose() << "NO CLOCK - RETURNING EARLY";
 		return false;
 	}
-		
+	
 	
 	if(lock)
 		Lock();
@@ -360,14 +360,14 @@ bool OMXClock::OMXMediaTime(double pts, bool lock /* = true*/)
 	if(omx_err != OMX_ErrorNone)
 	{
 		ofLog(OF_LOG_ERROR, "OMXClock::OMXMediaTime error setting %s", index == OMX_IndexConfigTimeCurrentAudioReference ?
-				  "OMX_IndexConfigTimeCurrentAudioReference":"OMX_IndexConfigTimeCurrentVideoReference");
+			  "OMX_IndexConfigTimeCurrentAudioReference":"OMX_IndexConfigTimeCurrentVideoReference");
 		if(lock)
 			UnLock();
 		return false;
 	}
 	
 	ofLog(OF_LOG_VERBOSE, "OMXClock::OMXMediaTime set config %s = %.2f (%.2f)", index == OMX_IndexConfigTimeCurrentAudioReference ?
-			  "OMX_IndexConfigTimeCurrentAudioReference":"OMX_IndexConfigTimeCurrentVideoReference", pts, OMXMediaTime(false));
+		  "OMX_IndexConfigTimeCurrentAudioReference":"OMX_IndexConfigTimeCurrentVideoReference", pts, OMXMediaTime(false));
 	
 	if(lock)
 		UnLock();
@@ -530,9 +530,9 @@ static int64_t CurrentHostCounter(void)
 }
 
 /*static int64_t CurrentHostFrequency(void)
-{
-	return( (int64_t)1000000000L );
-}*/
+ {
+ return( (int64_t)1000000000L );
+ }*/
 
 int64_t OMXClock::GetAbsoluteClock()
 {

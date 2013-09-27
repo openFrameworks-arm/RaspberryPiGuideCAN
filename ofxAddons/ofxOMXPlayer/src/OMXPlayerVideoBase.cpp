@@ -6,7 +6,6 @@ OMXPlayerVideoBase::OMXPlayerVideoBase()
 	m_decoder = NULL;
 	m_pStream = NULL;
 	pthread_cond_init(&m_packet_cond, NULL);
-	//pthread_cond_init(&m_picture_cond, NULL);
 	pthread_mutex_init(&m_lock, NULL);
 	pthread_mutex_init(&m_lock_decoder, NULL);
 }
@@ -16,7 +15,6 @@ OMXPlayerVideoBase::~OMXPlayerVideoBase()
 	Close();
 	
 	pthread_cond_destroy(&m_packet_cond);
-	//pthread_cond_destroy(&m_picture_cond);
 	pthread_mutex_destroy(&m_lock);
 	pthread_mutex_destroy(&m_lock_decoder);
 }
@@ -138,7 +136,7 @@ void OMXPlayerVideoBase::Flush()
 	if(m_decoder)
 	{
 		ofLogVerbose() << "OMXPlayerVideoBase::m_decoder->Reset";
-		m_decoder->Reset();
+		//m_decoder->Reset();
 	}
 	
 	UnLockDecoder();
@@ -256,7 +254,7 @@ void OMXPlayerVideoBase::WaitCompletion()
 	
 	if(!m_decoder)
 	{
-		return;
+		return; 
 	}
 	
 	while(true)
@@ -291,7 +289,7 @@ bool OMXPlayerVideoBase::Close()
 		StopThread();
 	}
 	ofLogVerbose() << "OMXPlayerVideoBase::Close() pre CloseDecoder";
-	CloseDecoder();
+	//CloseDecoder();
 	
 	m_dllAvUtil.Unload();
 	m_dllAvCodec.Unload();

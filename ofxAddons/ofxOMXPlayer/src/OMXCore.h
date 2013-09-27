@@ -1,11 +1,11 @@
 #pragma once
 #include "ofMain.h"
-
-#include <string>
-#include <queue>
-
-
-#include "DllOMX.h"
+#include <IL/OMX_Core.h>
+#include <IL/OMX_Component.h>
+#include <IL/OMX_Index.h>
+#include <IL/OMX_Image.h>
+#include <IL/OMX_Video.h>
+#include <IL/OMX_Broadcom.h>
 
 #include <semaphore.h>
 
@@ -23,6 +23,7 @@
 #include "DllAvFormat.h"
 
 #define OMX_MAX_PORTS 10
+
 
 typedef struct omx_event {
   OMX_EVENTTYPE eEvent;
@@ -44,16 +45,18 @@ public:
 
   void Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port);
   OMX_ERRORTYPE Flush();
-  OMX_ERRORTYPE Deestablish(bool noWait = false);
+  OMX_ERRORTYPE Deestablish(bool doWait = true);
   OMX_ERRORTYPE Establish(bool portSettingsChanged);
+	string srcName;
+	string dstName;
 private:
+	bool isEstablished;
   pthread_mutex_t   m_lock;
   bool              m_portSettingsChanged;
   COMXCoreComponent *m_src_component;
   COMXCoreComponent *m_dst_component;
   unsigned int      m_src_port;
   unsigned int      m_dst_port;
-  DllOMX            *m_DllOMX;
   void              Lock();
   void              UnLock();
 };
@@ -73,7 +76,7 @@ public:
   void          Remove(OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2);
   OMX_ERRORTYPE AddEvent(OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2);
   OMX_ERRORTYPE WaitForEvent(OMX_EVENTTYPE event, long timeout = 300);
-  OMX_ERRORTYPE WaitForCommand(OMX_U32 command, OMX_U32 nData2, long timeout = 2000);
+  OMX_ERRORTYPE WaitForCommand(OMX_U32 command, OMX_U32 nData2, long timeout);
   OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
   OMX_STATETYPE GetState();
   OMX_ERRORTYPE SetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR paramStruct);
@@ -131,7 +134,7 @@ public:
 	void SetEOS(bool isEndOfStream);
   void SetCustomDecoderFillBufferDoneHandler(OMX_ERRORTYPE (*p)(OMX_HANDLETYPE, OMX_PTR, OMX_BUFFERHEADERTYPE*)){ CustomDecoderFillBufferDoneHandler = p;};
   void SetCustomDecoderEmptyBufferDoneHandler(OMX_ERRORTYPE (*p)(OMX_HANDLETYPE, OMX_PTR, OMX_BUFFERHEADERTYPE*)){ CustomDecoderEmptyBufferDoneHandler = p;};
-
+		
 private:
   OMX_HANDLETYPE m_handle;
   unsigned int   m_input_port;
@@ -167,7 +170,6 @@ private:
   sem_t         m_omx_fill_buffer_done;
 
   bool          m_exit;
-  DllOMX        *m_DllOMX;
   pthread_cond_t    m_input_buffer_cond;
   pthread_cond_t    m_output_buffer_cond;
   pthread_cond_t    m_omx_event_cond;
@@ -181,16 +183,14 @@ private:
 class COMXCore
 {
 public:
-  COMXCore();
-  ~COMXCore();
+	COMXCore();
 
-  // initialize OMXCore and get decoder component
-  bool Initialize();
-  void Deinitialize();
-
+	// initialize OMXCore and get decoder component
+	bool Initialize();
+	void Deinitialize();
+		
 protected:
   bool              m_is_open;
   bool              m_Initialized;
-  DllOMX            *m_DllOMX;
 };
 

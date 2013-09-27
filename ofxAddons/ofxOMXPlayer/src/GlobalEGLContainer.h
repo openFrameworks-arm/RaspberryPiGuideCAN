@@ -20,6 +20,7 @@ public:
 		static GlobalEGLContainer    instance;
 		return instance;
 	}
+	ofFbo fbo;
 	ofTexture texture;
 	EGLImageKHR eglImage;
 	GLuint textureID;
@@ -30,6 +31,18 @@ public:
 	bool doLooping;
 	int videoWidth;
 	int videoHeight;
+	ofPixels pixels;
+	int textureGLFormat;
+	ofImageType imageTypeFromGL;
+	bool isExiting;
+	void updatePixels()
+	{
+		fbo.begin();
+			ofClear(0, 0, 0, 0);
+			texture.draw(0, 0);
+			glReadPixels(0,0,videoWidth, videoHeight, textureGLFormat, GL_UNSIGNED_BYTE, pixels.getPixels());
+		fbo.end();
+	}
 	
 	void generateEGLImage(int videoWidth_, int videoHeight_)
 	{	
@@ -82,11 +95,26 @@ public:
 			texture.clear();
 		}
 		
+		ofFbo::Settings fboSettings;
+		fboSettings.width = videoWidth;
+		fboSettings.height = videoHeight;
+		fboSettings.wrapModeVertical = GL_REPEAT;	// GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER etc.
+		fboSettings.wrapModeHorizontal = GL_REPEAT; // GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER etc.
+		//int		wrapModeHorizontal;		// GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER etc.
+		//int		wrapModeVertical;		// GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER etc.
+		
+		fbo.allocate(fboSettings);
+		//fbo.allocate(videoWidth, videoHeight, GL_RGBA);
+		
+		
 		texture.allocate(videoWidth, videoHeight, GL_RGBA);
+		//Video renders upside down and backwards when Broadcom proprietary tunnels are enabled
+		//may be resolved in future firmare
+		//https://github.com/raspberrypi/firmware/issues/176
+		
 		texture.getTextureData().bFlipTexture = true;
 		texture.setTextureWrap(GL_REPEAT, GL_REPEAT);
 		textureID = texture.getTextureData().textureID;
-		
 		
 		ofLogVerbose(__func__) << "textureID: " << textureID;
 		ofLogVerbose(__func__) << "tex.isAllocated(): " << texture.isAllocated();
@@ -123,10 +151,41 @@ public:
 		else
 		{
 			ofLogVerbose()	<< "Create EGLImage PASS";
+			textureGLFormat = ofGetGLFormatFromInternal(texture.getTextureData().glTypeInternal);
+			imageTypeFromGL = ofGetImageTypeFromGLType(texture.getTextureData().glTypeInternal);
+			pixels.allocate(texture.getWidth(), texture.getHeight(), imageTypeFromGL);
+			if (pixels.isAllocated()) 
+			{
+				ofLogVerbose(__func__)	<< "pixels Allocated PASS";
+			}else 
+			{
+				ofLogVerbose(__func__)	<< "pixels Allocated FAIL";
+			}
+
 			hasGenerated = true;
 		}
 		
 	}
+	void destroyEGLImage()
+	{
+		if (eglImage) 
+		{
+			if (eglDestroyImageKHR(display, eglImage)) 
+			{
+				ofLogVerbose(__func__) << "eglDestroyImageKHR PASS";
+			}
+			else
+			{
+				ofLogError(__func__) << "eglDestroyImageKHR FAIL";
+			}
+			eglImage = NULL;
+		}
+		/*if (texture.isAllocated()) 
+		{
+			texture.clear();
+		}*/
+	}
+
 private:
 	GlobalEGLContainer() 
 	{
@@ -139,28 +198,12 @@ private:
 		display = NULL;
 		hasGenerated = false;
 		doLooping = false;
+		isExiting = false;
 	};
-	
-	void destroyEGLImage()
-	{
-		/*if (eglImage) 
-		{
-			if (eglDestroyImageKHR(display, eglImage)) 
-			{
-				ofLogVerbose(__func__) << "eglDestroyImageKHR PASS";
-			}
-			else
-			{
-				ofLogError(__func__) << "eglDestroyImageKHR FAIL";
-			}
-			eglImage = NULL;
-		}*/
-		
-	}
 	
 	~GlobalEGLContainer()
 	{
-		destroyEGLImage();
+		//destroyEGLImage();
 	};
 	GlobalEGLContainer(GlobalEGLContainer const&);
 	void operator=(GlobalEGLContainer const&);
