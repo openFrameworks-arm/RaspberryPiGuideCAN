@@ -1,0 +1,8 @@
+libs
+obj
+*.app
+*/bin/*
+!*/bin/data
+*._*
+*2013*.jpg
+!bin/cameraModuleApp.bin
