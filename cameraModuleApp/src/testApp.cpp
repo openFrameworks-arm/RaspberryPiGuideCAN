@@ -11,7 +11,7 @@ void testApp::setup()
 	shader.load("PostProcessing.vert", "PostProcessing.frag", "");
 	
 	consoleListener.setup(this);
-	videoGrabber.setup(1280, 720, 30);
+	videoGrabber.setup(1280, 720, 60);
 	
 }
 
@@ -43,8 +43,6 @@ void testApp::draw(){
 
 	stringstream info;
 	info << "App FPS: " << ofGetFrameRate() << "\n";
-	info << "Camera frameCounter: " << videoGrabber.frameCounter << "\n";
-	info << "App frameCounter: " << ofGetFrameNum() << "\n";
 	info << "Camera Resolution: " << videoGrabber.getWidth() << "x" << videoGrabber.getHeight()	<< " @ "<< videoGrabber.getFrameRate() <<"FPS"<< "\n";
 	info << "CURRENT FILTER: " << filterCollection.currentFilter.name << "\n";
 	info <<	filterCollection.filterList << "\n";

@@ -6,7 +6,7 @@ void testApp::setup()
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	ofSetVerticalSync(false);
 	
-	string videoPath = ofToDataPath("../../../videos/big_buck_bunny_MpegStreamclip_720p_h264_50Quality_48K_256k_AAC.mov", true);
+	string videoPath = ofToDataPath("../../../videos/720p.mov", true);
 	
 	// this will just set videoPath to the first video in the videos folder, if any.
 	ofDirectory currentVideoDirectory(ofToDataPath("videos", true));
