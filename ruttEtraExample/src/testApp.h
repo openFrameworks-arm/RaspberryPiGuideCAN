@@ -44,8 +44,10 @@ class testApp : public ofBaseApp{
 		float					linesHeight;
 		int						lineSkip;
 		ofVec3f					imageToSpaceScaling;
-		ofVboMesh				vbo;
-	
+		ofMesh					mesh;
+		//ofVboMesh				mesh;
 		float					lastClickTime;
+	
+	ofFbo fbo;
 };
 

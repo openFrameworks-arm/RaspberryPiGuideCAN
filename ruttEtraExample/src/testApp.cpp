@@ -2,7 +2,8 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
-
+	
+	ofEnableAlphaBlending();
 	#ifdef TARGET_OPENGLES
 		ofHideCursor();
 	#endif
@@ -12,12 +13,16 @@ void testApp::setup(){
         vidGrabber.initGrabber(320,240);
 	#else
         vidPlayer.loadMovie("movies/fingers.mp4");
+		vidPlayer.setLoopState(OF_LOOP_NORMAL);//Quirk, This must be set on the Pi after loadMovie
         vidPlayer.play();
 	#endif
 
     colorImg.allocate(320,240);
 	grayImage.allocate(320,240);
-	
+	fbo.allocate(ofGetWidth(), ofGetHeight());
+	fbo.begin();
+		ofClear(0, 0, 0, 0);
+	fbo.end();
 
 	// We need to load different shaders for mobile (or Pi) and desktop.
 #ifdef TARGET_OPENGLES
@@ -56,7 +61,7 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::update()
 {
-	ofBackground(0,0,0);
+	ofBackground(ofColor::black);
 
 	// grab new frame and update colorImg with it.
     bool bNewFrame = false;
@@ -69,7 +74,8 @@ void testApp::update()
         bNewFrame = vidPlayer.isFrameNew();
 	#endif
 
-	if (bNewFrame){
+	if (bNewFrame)
+	{
 		
 		#ifdef _USE_LIVE_VIDEO
             colorImg.setFromPixels(vidGrabber.getPixels(), 320,240);
@@ -78,61 +84,67 @@ void testApp::update()
         #endif
 
         grayImage = colorImg; // converts from color to greyscale
-	}
 
-	float time = ofGetElapsedTimef();
+		float time = ofGetElapsedTimef();
 
-	// Update mesh from grayImage's pixels
-	updateMesh();
-	
-	// update a few variables based on time
-	float timeToChangePalettes = 10.0f;
-	int paletteIndex = (int) ((ofWrap( time, 0.0f, timeToChangePalettes ) / timeToChangePalettes ) * palettes.size());
-	if( palettes.size() > 0 && paletteIndex < palettes.size())  currPalette = &palettes.at(paletteIndex);
+		// Update mesh from grayImage's pixels
+		updateMesh();
 		
-	linesHeight = 80.0f;
-	
-	lineSkip = 4; //ofMap( cos(time * 1.1f), -1.0f, 1.0f, 2, 25 );
-	
-	// if we click, wait a bit until we auto orbit the camera
-	if( (time - lastClickTime) > 4.0 )
-	{
-		float orbitLong = ofMap( ofNoise(time*0.2f), 0.0f, 1.0f, -50.0f, 50.0f ) ;
-		float orbitLat = ofMap( ofNoise( (time+111.0f)*0.3f), 0.0f, 1.0f, 0.0f, -100.0f ) ;
-		float orbitRadius = ofMap( ofNoise( (time-123.0f)*0.45f), 0.0f, 1.0f, 100.0f, 250.0f ) ;
-		camera.orbit(orbitLong, orbitLat, orbitRadius );
+		// update a few variables based on time
+		float timeToChangePalettes = 10.0f;
+		int paletteIndex = (int) ((ofWrap( time, 0.0f, timeToChangePalettes ) / timeToChangePalettes ) * palettes.size());
+		if( palettes.size() > 0 && paletteIndex < palettes.size())  currPalette = &palettes.at(paletteIndex);
+			
+		linesHeight = 80.0f;
+		
+		lineSkip = 4; //ofMap( cos(time * 1.1f), -1.0f, 1.0f, 2, 25 );
+		
+		// if we click, wait a bit until we auto orbit the camera
+		if( (time - lastClickTime) > 4.0 )
+		{
+			float orbitLong = ofMap( ofNoise(time*0.2f), 0.0f, 1.0f, -50.0f, 50.0f ) ;
+			float orbitLat = ofMap( ofNoise( (time+111.0f)*0.3f), 0.0f, 1.0f, 0.0f, -100.0f ) ;
+			float orbitRadius = ofMap( ofNoise( (time-123.0f)*0.45f), 0.0f, 1.0f, 100.0f, 250.0f ) ;
+			camera.orbit(orbitLong, orbitLat, orbitRadius );
+		}
+		
+		fbo.begin();
+			ofClear(0, 0, 0, 0); //clear our Fbo memory
+			ofEnableDepthTest(); //enable 3d
+				camera.begin(); //start our camera viewpoint
+					ofTranslate( 
+								(grayImage.getWidth() * -0.5f) * imageToSpaceScaling.x, //move x
+								0.0f,													//move y
+								(grayImage.getHeight() * -0.5f) * imageToSpaceScaling.z //move z
+								);
+			
+					ofSetColor( ofColor::white );	//start with a white mesh
+					colorFromHeightShader.begin();	//begin our shader
+						if( currPalette != NULL )	//make sure we have a palette
+						{
+							//we pass our palette to the shader
+							colorFromHeightShader.setUniformTexture( "u_paletteSampler", currPalette->getTextureReference(), 1 ); 
+						}
+						//we pass our linesHeight to the shader
+						colorFromHeightShader.setUniform1f("u_maxHeight", linesHeight );
+		
+						//we draw our mesh (currently in OF_PRIMITIVE_LINES mode)
+						mesh.draw();
+					colorFromHeightShader.end();	//stop our shader operation
+				camera.end();						//end our camera view
+			ofDisableDepthTest();					//ending 3d
+		fbo.end();									//stop drawing inside the fbo
 	}
-
-	if( ofGetFrameNum() % 30 == 0 ) ofLogNotice() <<  "fps: " << ofToString( ofGetFrameRate(), 1); 
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
-
+	
 	grayImage.draw(0,0);
-	
-	ofEnableDepthTest();
-	
-	camera.begin();
-
-		ofTranslate( (grayImage.getWidth() * -0.5f) * imageToSpaceScaling.x, 0.0f, (grayImage.getHeight() * -0.5f) * imageToSpaceScaling.z );
-	
-		ofSetColor( ofColor::white );
-	
-		colorFromHeightShader.begin();
-			
-			if( currPalette != NULL ) colorFromHeightShader.setUniformTexture( "u_paletteSampler", currPalette->getTextureReference(), 1 );
-			colorFromHeightShader.setUniform1f("u_maxHeight", linesHeight );
-	
-			vbo.draw();
-	
-		colorFromHeightShader.end();
-	
-	camera.end();
-	
-	ofDisableDepthTest();
-	
+	fbo.draw(0, 0);
+		
 	if( currPalette != NULL ) currPalette->draw(0, ofGetHeight() - 20, 256, 20 );
+	//ofDrawBitmapStringHighlight("FPS: " + ofToString( ofGetFrameRate(), 1), 320, 50, ofColor::black, ofColor::yellow);
 
 }
 
@@ -143,8 +155,8 @@ void testApp::updateMesh()
 	
 	ofPixelsRef tmpPixels = grayImage.getPixelsRef();
 	
-	vbo.clear();
-	vbo.setMode( OF_PRIMITIVE_LINES );
+	mesh.clear();
+	mesh.setMode( OF_PRIMITIVE_LINES );
 	
 	int tmpIndex = 0;
 	for( int y = 0; y < grayImage.getHeight(); y += lineSkip )
@@ -156,7 +168,7 @@ void testApp::updateMesh()
 			ofVec3f tmpVert(x, tmpPixels[tmpIndex]/255.0f, y);
 			tmpVert *= imageToSpaceScaling;
 			
-			vbo.addVertex( tmpVert );
+			mesh.addVertex( tmpVert );
 			
 			tmpIndex++;
 		}
@@ -170,8 +182,8 @@ void testApp::updateMesh()
 		
 		for( int x = 0; x < grayImage.getWidth()-1; x++ )
 		{
-			vbo.addIndex( tmpIndex );
-			vbo.addIndex( tmpIndex + 1 );
+			mesh.addIndex( tmpIndex );
+			mesh.addIndex( tmpIndex + 1 );
 			
 			tmpIndex++;
 		}
