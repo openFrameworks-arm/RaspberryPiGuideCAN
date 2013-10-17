@@ -2,9 +2,10 @@
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"
+#include "ConsoleListener.h"
 
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp, public SSHKeyListener{
 
 	public:
 		void setup();
@@ -27,5 +28,10 @@ class ofApp : public ofBaseApp{
 		bool					doLearnBackground;
 		
 		ofTrueTypeFont			font;
+	
+		void onCharacterReceived(SSHKeyListenerEventData& e);
+		ConsoleListener consoleListener;
+	
+		bool doDrawInfo;
 };
 

@@ -7,7 +7,7 @@ void ofApp::setup(){
 	
 	//ofSetVerticalSync(false);
 	videoPlayer.loadMovie("fingers.mp4");
-	videoPlayer.setLoopState(OF_LOOP_NORMAL);
+	videoPlayer.setLoopState(OF_LOOP_NORMAL); //must set this after loadMovie on the RPI
 	
 	videoWidth	= videoPlayer.getWidth();
 	videoHeight = videoPlayer.getHeight();
@@ -20,6 +20,10 @@ void ofApp::setup(){
 
 	doLearnBackground = true;
 	thresholdAmount = 80;
+	
+	consoleListener.setup(this);
+	
+	doDrawInfo = false;
 }
 
 //--------------------------------------------------------------
@@ -81,28 +85,28 @@ void ofApp::draw(){
 		//Draw video source
 		ofPushMatrix();
 			colorImage.draw(0, 0);
-			//font.drawString("colorImage", textMargin, textMargin);
+			if(doDrawInfo) font.drawString("colorImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Grayscale video
 		ofPushMatrix();
 			ofTranslate(videoWidth, 0);
 			grayImage.draw(0, 0);
-			//font.drawString("grayImage", textMargin, textMargin);
+			if(doDrawInfo) font.drawString("grayImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Background
 		ofPushMatrix();
 			ofTranslate(0, videoHeight);
 			backgroundImage.draw(0, 0);
-			//font.drawString("backgroundImage", textMargin, textMargin);
+			if(doDrawInfo) font.drawString("backgroundImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Difference Image
 		ofPushMatrix();
 			ofTranslate(videoWidth, videoHeight);
 			differenceImage.draw(0, 0);
-			//font.drawString("differenceImage", textMargin, textMargin);
+			if(doDrawInfo) font.drawString("differenceImage", textMargin, textMargin);
 		ofPopMatrix();
 		
 		//Draw Contours
@@ -132,10 +136,10 @@ void ofApp::draw(){
 		ofPushMatrix();
 			ofTranslate(0, videoHeight*2);
 			stringstream info;
-			
-			//info << "Press SPACEBAR to capture background"							<< "\n";
-			//info << "Press +/- to increase/decrease threshold " << thresholdAmount	<< "\n";
-			//info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";
+			info << "Press 't' to toggle labels (fps increase)"						<< "\n";
+			info << "Press 'b' to capture background"								<< "\n";
+			info << "Press e/r to increase/decrease threshold " << thresholdAmount	<< "\n";
+			info << "Blobs found: " << contourFinder.blobs.size()					<< "\n";
 			info << "FPS: " << ofGetFrameRate();
 			font.drawString( info.str(), 2, textMargin);
 		ofPopMatrix();
@@ -149,16 +153,27 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
 
 	switch (key){
-		case ' ':
+		case 't':
+			doDrawInfo = !doDrawInfo;
+			break;
+		case 'b':
 			doLearnBackground = true;
 			break;
-		case '+':
-			thresholdAmount ++;
+		case 'r':
+			thresholdAmount +=10;
 			if (thresholdAmount > 255) thresholdAmount = 255;
 			break;
-		case '-':
-			thresholdAmount --;
+		case 'e':
+			thresholdAmount -=10;
 			if (thresholdAmount < 0) thresholdAmount = 0;
 			break;
+		case 'd':
+			thresholdAmount =80;
+			break;
 	}
+}
+
+void ofApp::onCharacterReceived(SSHKeyListenerEventData& e)
+{
+	keyPressed((int)e.character);
 }
