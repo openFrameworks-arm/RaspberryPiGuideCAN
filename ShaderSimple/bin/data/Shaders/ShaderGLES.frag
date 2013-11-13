@@ -7,14 +7,17 @@ uniform float time;
 void main()
 {
 	// Pulse screen
-	/*float col = (cos(time*2.0)+1.0)*0.5;
-	gl_FragColor = vec4( col, col, col, 1.0 ); */
+	float col = (cos(time*2.0)+1.0)*0.5;
+	gl_FragColor = vec4( col, col, col, 1.0 ); 
 
+	/*
 	// Bars
-	/*float barLength = (((cos(time)+1.0)*0.5) * 90.0) + 10.0;
+	float barLength = (((cos(time)+1.0)*0.5) * 90.0) + 10.0;
 	float col = mod( gl_FragCoord.x, barLength) / barLength;
-	gl_FragColor = vec4( col, col, col, 1.0 ); */
+	gl_FragColor = vec4( col, col, col, 1.0 ); 
+	*/
 	
+	/*
 	// Plasma
 	float x = gl_FragCoord.x;
 	float y = gl_FragCoord.y;
@@ -25,5 +28,5 @@ void main()
 	float c2 = abs(sin(c1+sin(mov0/1000.+time)+sin(y/40.+time)+sin((x+y)/100.)*3.));
 	float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));
 	gl_FragColor = vec4( c1,c2,c3,1.0);
-	
+	*/
 }
